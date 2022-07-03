@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 [RequireComponent(typeof(PlayerInput))]
 public class GameInput : MonoBehaviour
@@ -9,7 +8,7 @@ public class GameInput : MonoBehaviour
     private PlayerInput _playerInput;
 
     public float moveInput;
-    public JumpInput jumpInput;
+    public event Action JumpStartEvent;
 
     private void Awake()
     {
@@ -30,32 +29,12 @@ public class GameInput : MonoBehaviour
         
         if (context.started)
         {
-            jumpInput.press = true;
+            JumpStartEvent?.Invoke();
         }
 
         else if (context.performed)
         {
-            jumpInput.press = false;
-            jumpInput.hold = true;
-        }
-            
-        else if (context.canceled)
-        {
-            jumpInput.hold = false;
+            //TODO: 长按大跳
         }
     }
-}
-
-[Serializable]
-public struct JumpInput
-{
-    /// <summary>
-    /// 按住跳跃键
-    /// </summary>
-    public bool hold;
-    
-    /// <summary>
-    /// 按下跳跃键
-    /// </summary>
-    public bool press;
 }
