@@ -16,9 +16,9 @@ public class PlayerController : MonoBehaviour
     private float _speed;
 
     [Header("Jump")]
-    public float jumpForce = 5;
-
-    public float gravityMultiplier = 1.0f;
+    public float jumpVelocity = 5;
+    public float jumpMultiplier = 1.0f;
+    public float fallMultiplier = 1.0f;
 
     [Header("Ground Check")] 
     public bool grounded;
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
     {
         var bounds = _coll.bounds;
         var rayCastHit = Physics2D.BoxCast(bounds.center,
-                                                bounds.size,
+                                                Vector2.one * checkSize,
                                                 0.0f,
                                                 Vector2.down,
                                                 checkOffset.y,
@@ -88,16 +88,16 @@ public class PlayerController : MonoBehaviour
         grounded = rayCastHit.collider;
         
         if (_rb.velocity.y < 0 && !grounded)
-            _rb.gravityScale = gravityMultiplier;
+            _rb.gravityScale = fallMultiplier;
         else
-            _rb.gravityScale = 1.0f;
+            _rb.gravityScale = jumpMultiplier;
     }
 
     private void OnJumpStart()
     {
         if (!grounded) return;
         
-        _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
+        _rb.velocity = new Vector2(_rb.velocity.x, jumpVelocity);
         _anim.SetTrigger(Jump);
     }
 
