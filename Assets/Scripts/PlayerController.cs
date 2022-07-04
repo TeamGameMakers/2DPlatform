@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(GameInput))]
 public class PlayerController : MonoBehaviour
@@ -14,10 +11,14 @@ public class PlayerController : MonoBehaviour
     private Collider2D _coll;
 
     [Header("Movement")]
-    public float speed = 5.0f;
+    public float speed = 2.8f;
+    public float speedMultiplier = 0.5f;
+    private float _speed;
 
     [Header("Jump")]
-    public float jumpHeight;
+    public float jumpForce = 5;
+
+    public float gravityMultiplier = 1.0f;
 
     [Header("Ground Check")] 
     public bool grounded;
@@ -57,16 +58,21 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
+        
         if (_input.moveInput == 0.0f)
         {
             _rb.velocity = new Vector2(0.0f, _rb.velocity.y);
             return;
         }
         
+        // 当在空中移动方向改变时，减慢移动速度
+        if (_rb.velocity.x * _input.moveInput <= 0)
+            _speed = grounded ? speed : speed * speedMultiplier;
+        
         // 改变人物朝向
-        _spriteRenderer.flipX = _input.moveInput < 0 ? true : false;
-
-        _rb.velocity = new Vector2(_input.moveInput * speed, _rb.velocity.y);
+        _spriteRenderer.flipX = _input.moveInput < 0;
+        
+        _rb.velocity = new Vector2(_input.moveInput * _speed, _rb.velocity.y);
     }
 
     private void GroundCheck()
@@ -78,15 +84,20 @@ public class PlayerController : MonoBehaviour
                                                 Vector2.down,
                                                 checkOffset.y,
                                                 checkLayer.value);
+
+        grounded = rayCastHit.collider;
         
-        grounded = rayCastHit.collider? true : false;
+        if (_rb.velocity.y < 0 && !grounded)
+            _rb.gravityScale = gravityMultiplier;
+        else
+            _rb.gravityScale = 1.0f;
     }
 
     private void OnJumpStart()
     {
         if (!grounded) return;
         
-        _rb.AddForce(jumpHeight * Vector2.up, ForceMode2D.Impulse);
+        _rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
         _anim.SetTrigger(Jump);
     }
 
