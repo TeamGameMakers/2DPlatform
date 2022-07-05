@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(GameInput))]
@@ -10,21 +11,32 @@ public class PlayerController : MonoBehaviour
     private Collider2D _coll;
 
     [Header("Movement")]
-    public float speed = 2.8f;
-    public float speedMultiplier = 0.5f;
+    [SerializeField] private float speed = 2.8f;
+    [SerializeField] private float speedMultiplier = 0.5f;
     private float _speed;
 
     [Header("Jump")]
-    public float jumpVelocity = 5;
-    public float jumpMultiplier = 1.0f;
-    public float fallMultiplier = 1.0f;
+    [SerializeField] private float jumpVelocity = 5;
+    [SerializeField] private float jumpMultiplier = 1.0f;
+    [SerializeField] private float fallMultiplier = 1.0f;
+    private bool _jumping;
 
     [Header("Ground Check")] 
-    public bool grounded;
-    public Vector2 checkOffset;
-    public float checkSize;
-    public LayerMask checkLayer;
-    
+    [SerializeField] private bool grounded;
+    [SerializeField] private Transform checkPos;
+    [SerializeField] private float checkRadius;
+    [SerializeField] private LayerMask checkLayer;
+
+    [Header("Slope Climb")] 
+    [SerializeField] private float maxAngle;
+    [SerializeField] private float rayLength;
+    [SerializeField] private bool onSlope;
+    [SerializeField] private PhysicsMaterial2D noneFriction;
+    [SerializeField] private PhysicsMaterial2D fullFriction;
+
+    public float gravityScale;
+    public Vector2 velocity;
+        
     // Animator Parameters Hash
     private static readonly int Move = Animator.StringToHash("move");
     private static readonly int Grounded = Animator.StringToHash("grounded");
@@ -42,12 +54,15 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _input.JumpStartEvent += OnJumpStart;
+        _speed = speed;
     }
 
     private void Update()
     {
         AnimationUpdate();
         GroundCheck();
+        gravityScale = _rb.gravityScale;
+        velocity = _rb.velocity;
     }
 
     private void FixedUpdate()
@@ -57,46 +72,69 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
+        var xInput = _input.moveInput;
         
-        if (_input.moveInput == 0.0f)
+        if (xInput != 0.0f) _spriteRenderer.flipX = xInput < 0;
+
+        if (xInput * _rb.velocity.x <= 0) _speed = grounded? speed : speed * speedMultiplier;
+        
+        if (!grounded)
         {
-            _rb.velocity = new Vector2(0.0f, _rb.velocity.y);
-            return;
+            _rb.gravityScale = _jumping? jumpMultiplier : fallMultiplier;
         }
-        
-        // 当在空中移动方向改变时，减慢移动速度
-        if (_rb.velocity.x * _input.moveInput <= 0)
-            _speed = grounded ? speed : speed * speedMultiplier;
-        
-        // 改变人物朝向
-        _spriteRenderer.flipX = _input.moveInput < 0;
-        
-        _rb.velocity = new Vector2(_input.moveInput * _speed, _rb.velocity.y);
+        else
+        {
+            _rb.gravityScale = fallMultiplier;
+            _speed = speed;
+        }
+
+        var dir = SlopeCheck();
+        _rb.sharedMaterial = xInput == 0 ? fullFriction : noneFriction;
+        if (dir != Vector2.zero && !_jumping && grounded)
+        {
+            _rb.velocity = new Vector2(-dir.x * xInput * _speed, -dir.y * xInput * speed);
+        }
+        else 
+            _rb.velocity = new Vector2(xInput * _speed, _rb.velocity.y);
+
     }
 
     private void GroundCheck()
     {
-        var bounds = _coll.bounds;
-        var rayCastHit = Physics2D.BoxCast(bounds.center,
-                                                Vector2.one * checkSize,
-                                                0.0f,
-                                                Vector2.down,
-                                                checkOffset.y,
-                                                checkLayer.value);
+        grounded = Physics2D.OverlapCircle(checkPos.position, checkRadius, checkLayer.value);
 
-        grounded = rayCastHit.collider;
+        if (_rb.velocity.y < 0) _jumping = false;
+    }
+
+    private Vector2 SlopeCheck()
+    {
+        var hit = Physics2D.Raycast(checkPos.position, Vector2.down, rayLength, checkLayer);
+
+        // 斜坡法向量和垂直向量的夹角
+        var angle = Vector2.Angle(Vector2.up, hit.normal);
         
-        if (_rb.velocity.y < 0 && !grounded)
-            _rb.gravityScale = fallMultiplier;
-        else
-            _rb.gravityScale = jumpMultiplier;
+        // 斜坡法向量的正交向量
+        var dir = Vector2.Perpendicular(hit.normal).normalized;
+        
+        Debug.DrawRay(hit.point, hit.normal, Color.green);
+        Debug.DrawRay(hit.point, -dir, Color.red);
+
+        if (angle <= maxAngle && angle > 0)
+        {
+            onSlope = true;
+            return dir;
+        }
+        
+        onSlope = false;
+
+        return Vector2.zero;
     }
 
     private void OnJumpStart()
     {
         if (!grounded) return;
-        
-        _rb.velocity = new Vector2(_rb.velocity.x, jumpVelocity);
+        _jumping = true;
+        _rb.velocity = new Vector2(_input.moveInput * _speed, jumpVelocity);
         _anim.SetTrigger(Jump);
     }
 
@@ -110,7 +148,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = grounded? Color.green : Color.red;
-        Gizmos.DrawWireCube(transform.position - (Vector3)checkOffset, Vector3.one * checkSize);
+        Gizmos.DrawWireSphere(checkPos.position, checkRadius);
     }
 #endif
 }
