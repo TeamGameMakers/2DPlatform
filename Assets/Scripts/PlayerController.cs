@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     // Animator Parameters Hash
     private static readonly int Move = Animator.StringToHash("move");
     private static readonly int Grounded = Animator.StringToHash("grounded");
-    private static readonly int Jump = Animator.StringToHash("jump");
+    private static readonly int Jump = Animator.StringToHash("jumping");
     
     private void Awake()
     {
@@ -131,13 +131,14 @@ public class PlayerController : MonoBehaviour
         _canJump = false;
         _jumping = true;
         _rb.velocity = new Vector2(0.0f, jumpVelocity);
-        _anim.SetTrigger(Jump);
+        // _anim.SetTrigger(Jump);
     }
 
     private void AnimationUpdate()
     {
         _anim.SetFloat(Move, Mathf.Abs(_input.moveInput));
         _anim.SetBool(Grounded, grounded);
+        _anim.SetBool(Jump, _jumping);
     }
     
 #if UNITY_EDITOR
