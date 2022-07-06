@@ -42,3 +42,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Basic
+    uniqueID: 351451915
+    locked: 0
+  - name: Ladders and Boxes
+    uniqueID: 4142759141
+    locked: 0
+  - name: Flying Planes
+    uniqueID: 4050159661
+    locked: 0
