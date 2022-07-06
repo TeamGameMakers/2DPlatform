@@ -134,6 +134,9 @@ GameObject:
   - component: {fileID: 697449220}
   - component: {fileID: 697449222}
   - component: {fileID: 697449221}
+  - component: {fileID: 697449224}
+  - component: {fileID: 697449223}
+  - component: {fileID: 697449225}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
