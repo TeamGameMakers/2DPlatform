@@ -1,7 +1,4 @@
-using System;
-using System.Numerics;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
 
 [RequireComponent(typeof(GameInput))]
 public class PlayerControllerX : MonoBehaviour
@@ -56,7 +53,6 @@ public class PlayerControllerX : MonoBehaviour
     private void Move()
     {
         var xInput = _input.moveInput * _currentSpeed;
-        var localScale = transform.localScale;
 
         Flip();
 
@@ -90,17 +86,12 @@ public class PlayerControllerX : MonoBehaviour
                 break;
             
             case CollisionDetector.PlayerLocation.Wall:
-                if (!_jumping)
-                {
-                    _rb.velocity = Vector2.down * 0.5f;
-                }
+                _rb.velocity = new Vector2(xInput, -3f);
+                _jumping = false;
                 break;
             
             case CollisionDetector.PlayerLocation.Edge:
                 break;
-            
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 

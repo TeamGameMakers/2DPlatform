@@ -2061,8 +2061,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   location: 0
-  groundCheckPos: {x: 0, y: -0.44}
-  groundCheckRadius: 0.13
+  groundCheckPos: {x: 0, y: -0.48}
+  groundCheckRadius: 0.1
   leftWallCheckPos: {x: -0.215, y: 0}
   rightWallCheckPos: {x: 0.215, y: 0}
   wallCheckRadius: 0.1
