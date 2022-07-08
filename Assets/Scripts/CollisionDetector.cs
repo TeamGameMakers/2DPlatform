@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -38,9 +37,9 @@ public class CollisionDetector : MonoBehaviour
 
     [Header("Check")]
     public bool onGround;
-    public bool onWall;
     public bool onSlope;
-    public bool onSteep;
+    public bool onWall;
+    public bool touchWall;
 
     private LayerMask _ground;
     private LayerMask _wall;
@@ -49,17 +48,17 @@ public class CollisionDetector : MonoBehaviour
     {
         _coll = GetComponent<Collider2D>();
         _input = GetComponent<GameInput>();
-        _ground = LayerMask.GetMask("Ground");
+        _ground = LayerMask.GetMask("Ground", "Wall");
         _wall = LayerMask.GetMask("Wall");
     }
 
     private void FixedUpdate()
     {
-        GroundCheck();
+        Check();
         LocationUpdate();
     }
 
-    private void GroundCheck()
+    private void Check()
     {
         // 地面检测
         Vector2 pos = _coll.bounds.center;
@@ -69,6 +68,7 @@ public class CollisionDetector : MonoBehaviour
         bool left = Physics2D.OverlapCircle(pos + leftWallCheckPos, wallCheckRadius, _wall);
         bool right = Physics2D.OverlapCircle(pos + rightWallCheckPos, wallCheckRadius, _wall);
         onWall = (left && _input.moveInput < 0) || (right && _input.moveInput > 0);
+        touchWall = left || right;
          
         
         // 坡度检测

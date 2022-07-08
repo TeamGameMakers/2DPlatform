@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(GameInput))]
@@ -12,7 +13,7 @@ public class PlayerControllerX : MonoBehaviour
     [SerializeField] private float speed = 3.5f;
     // [SerializeField] private float airSpeedMultiplier = 0.5f;
     private float _currentSpeed;
-    
+
     [Header("Jump")]
     [SerializeField] private float jumpVelocity = 5;
     // [SerializeField] private float jumpMultiplier = 1.0f;
@@ -54,7 +55,7 @@ public class PlayerControllerX : MonoBehaviour
     {
         var xInput = _input.moveInput * _currentSpeed;
 
-        Flip();
+        Flip(xInput);
 
         if (_rb.velocity.y < 0) _jumping = false;
 
@@ -86,7 +87,9 @@ public class PlayerControllerX : MonoBehaviour
                 break;
             
             case CollisionDetector.PlayerLocation.Wall:
+                _canJump = true;
                 _rb.velocity = new Vector2(xInput, -3f);
+                Flip(-xInput);
                 _jumping = false;
                 break;
             
@@ -95,11 +98,11 @@ public class PlayerControllerX : MonoBehaviour
         }
     }
 
-    private void Flip()
+    private void Flip(float faceDirection)
     {
         var scale = transform.localScale;
         
-        if (scale.x * _input.moveInput < 0) scale.Set(-scale.x, scale.y,scale.z);
+        if (scale.x * faceDirection < 0) scale.Set(-scale.x, scale.y,scale.z);
 
         transform.localScale = scale;
     }
@@ -109,8 +112,29 @@ public class PlayerControllerX : MonoBehaviour
         if (!_canJump) return;
         _canJump = false;
         _jumping = true;
-        _rb.velocity = new Vector2(0.0f, jumpVelocity);
+
+        if (_collDetector.location != CollisionDetector.PlayerLocation.Wall)
+            _rb.velocity = Vector2.up * jumpVelocity;
+        else
+            StartCoroutine(WallJump(0.5f));
     }
+
+    private IEnumerator WallJump(float waitTime)
+    {
+        _input.moveInput = transform.localScale.x;
+        _input.canMove = false;
+        _rb.velocity = Vector2.up * jumpVelocity;
+        
+        while (waitTime > 0)
+        {
+            waitTime -= Time.deltaTime;
+            _rb.velocity = new Vector2(_input.moveInput * speed, _rb.velocity.y);
+            yield return null;
+        }
+
+        _input.canMove = true;
+    }
+    
     
     private void AnimationUpdate()
     {

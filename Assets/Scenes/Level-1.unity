@@ -1923,6 +1923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveInput: 0
+  canMove: 1
 --- !u!50 &1548580084
 Rigidbody2D:
   serializedVersion: 4
@@ -2070,9 +2071,9 @@ MonoBehaviour:
   rayCastLength: 0.2
   maxAngle: 45
   onGround: 0
-  onWall: 0
   onSlope: 0
-  onSteep: 0
+  onWall: 0
+  touchWall: 0
 --- !u!114 &1548580090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2270,6 +2271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveInput: 0
+  canMove: 0
 --- !u!114 &1965733550
 MonoBehaviour:
   m_ObjectHideFlags: 0

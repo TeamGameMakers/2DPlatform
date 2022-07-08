@@ -8,6 +8,7 @@ public class GameInput : MonoBehaviour
     private PlayerInput _playerInput;
 
     public float moveInput;
+    public bool canMove = true;
     public event Action JumpStartEvent;
 
     private void Awake()
@@ -19,7 +20,7 @@ public class GameInput : MonoBehaviour
 
     private void GetMoveInput(InputAction.CallbackContext context)
     {
-        if (context.action.name != "Move") return;
+        if (context.action.name != "Move" || !canMove) return;
         moveInput = context.ReadValue<float>();
     }
 
