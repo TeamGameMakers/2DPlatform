@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(GameInput))]
@@ -10,13 +11,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private float speed = 2.8f;
-    [SerializeField] private float airSpeedMultiplier = 0.5f;
+    // [SerializeField] private float airSpeedMultiplier = 0.5f;
     private float _currentSpeed;
 
     [Header("Jump")]
     [SerializeField] private float jumpVelocity = 5;
-    [SerializeField] private float jumpMultiplier = 1.0f;
-    [SerializeField] private float fallMultiplier = 1.0f;
+    // [SerializeField] private float jumpMultiplier = 1.0f;
+    // [SerializeField] private float fallMultiplier = 1.0f;
     private bool _jumping;
     private bool _canJump;
 
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _slopeDirection;
 
     // Animator Parameters Hash
-    private static readonly int Move = Animator.StringToHash("move");
+    private static readonly int Run = Animator.StringToHash("run");
     private static readonly int Grounded = Animator.StringToHash("grounded");
     private static readonly int Jump = Animator.StringToHash("jumping");
     
@@ -76,7 +77,8 @@ public class PlayerController : MonoBehaviour
 
         if (grounded && !_onSlope &&  !_jumping)
         {
-            _rb.velocity = new Vector2(_currentSpeed * xInput, 0.0f);
+            xInput *= _currentSpeed;
+            _rb.velocity = Vector2.right * xInput;
         }
         else if (grounded && _onSlope && _canMoveOnSlope && !_jumping)
         {
@@ -99,6 +101,8 @@ public class PlayerController : MonoBehaviour
 
         if (grounded && !_jumping && _canMoveOnSlope)
             _canJump = true;
+        else
+            _canJump = false;
     }
     
     private void SlopeCheck()
@@ -129,14 +133,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!_canJump) return;
         _canJump = false;
-        _jumping = true;
+        _jumping = true;    
         _rb.velocity = new Vector2(0.0f, jumpVelocity);
         // _anim.SetTrigger(Jump);
     }
 
     private void AnimationUpdate()
     {
-        _anim.SetFloat(Move, Mathf.Abs(_input.moveInput));
+        _anim.SetFloat(Run, Mathf.Abs(_input.moveInput));
         _anim.SetBool(Grounded, grounded);
         _anim.SetBool(Jump, _jumping);
     }
