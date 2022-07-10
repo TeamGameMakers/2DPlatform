@@ -67,10 +67,17 @@ public class CollisionDetector : MonoBehaviour
         // 墙面检测
         bool left = Physics2D.OverlapCircle(pos + leftWallCheckPos, wallCheckRadius, _wall);
         bool right = Physics2D.OverlapCircle(pos + rightWallCheckPos, wallCheckRadius, _wall);
-        onWall = (left && _input.moveInput < 0) || (right && _input.moveInput > 0);
+        if (location == PlayerLocation.Air)
+        {
+            if (_input.moveInput < 0 && left || _input.moveInput > 0 && right)
+                onWall = true;
+        }
+        else if (_input.moveInput * transform.localScale.x > 0 || onGround)
+        {
+            onWall = false;
+        }
         touchWall = left || right;
-         
-        
+
         // 坡度检测
         var hit = Physics2D.Raycast(pos + slopeCheckPos, Vector2.down, rayCastLength, _ground);
         _slopeAngle = Vector2.Angle(Vector2.up, hit.normal);

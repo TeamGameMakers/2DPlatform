@@ -57,7 +57,13 @@ public class PlayerControllerX : MonoBehaviour
 
         Flip(xInput);
 
-        if (_rb.velocity.y < 0) _jumping = false;
+        if (_rb.velocity.y < 0)
+        {
+            _jumping = false;
+            
+            // 下落时更新一次移动输入来优化贴墙跳跃手感
+            _input.UpdateMoveInput();
+        }
 
         switch (_collDetector.location)
         {
@@ -83,6 +89,7 @@ public class PlayerControllerX : MonoBehaviour
             
             case CollisionDetector.PlayerLocation.Air:
                 _canJump = false;
+                //TODO: 滑墙速度
                 _rb.velocity = new Vector2(xInput, _rb.velocity.y);
                 break;
             
@@ -112,17 +119,20 @@ public class PlayerControllerX : MonoBehaviour
         if (!_canJump) return;
         _canJump = false;
         _jumping = true;
-
-        if (_collDetector.location != CollisionDetector.PlayerLocation.Wall)
-            _rb.velocity = Vector2.up * jumpVelocity;
-        else
+        
+        if (_collDetector.location == CollisionDetector.PlayerLocation.Wall)
             StartCoroutine(WallJump(0.5f));
+        else
+        {
+            _rb.velocity = Vector2.up * jumpVelocity;
+            if (_collDetector.touchWall) _input.moveInput = 0;
+        }
     }
 
     private IEnumerator WallJump(float waitTime)
     {
         _input.moveInput = transform.localScale.x;
-        _input.canMove = false;
+        _input.canMove = false; 
         _rb.velocity = Vector2.up * jumpVelocity;
         
         while (waitTime > 0)
@@ -132,7 +142,9 @@ public class PlayerControllerX : MonoBehaviour
             yield return null;
         }
 
+        _input.moveInput = 0;
         _input.canMove = true;
+        _input.UpdateMoveInput();
     }
     
     
