@@ -1940,7 +1940,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 3
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 46cc58afba97d9640b3d7de502161935, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -2062,11 +2062,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   location: 0
-  groundCheckPos: {x: 0, y: -0.48}
+  groundCheckPos: {x: 0, y: -0.5}
   groundCheckRadius: 0.1
-  leftWallCheckPos: {x: -0.215, y: 0}
-  rightWallCheckPos: {x: 0.215, y: 0}
-  wallCheckRadius: 0.1
+  wallCheckPos: {x: 0, y: 0}
+  wallCheckLength: 0.35
   slopeCheckPos: {x: 0, y: -0.44}
   rayCastLength: 0.2
   maxAngle: 45

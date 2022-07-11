@@ -22,9 +22,8 @@ public class CollisionDetector : MonoBehaviour
     [SerializeField] private float groundCheckRadius;
     
     [Header("Wall Check Settings")]
-    [SerializeField] private Vector2 leftWallCheckPos;
-    [SerializeField] private Vector2 rightWallCheckPos;
-    [SerializeField] private float wallCheckRadius;
+    [SerializeField] private Vector2 wallCheckPos;
+    [SerializeField] private float wallCheckLength;
     
     [Header("Slope Check Settings")]
     [SerializeField] private Vector2 slopeCheckPos;
@@ -43,7 +42,8 @@ public class CollisionDetector : MonoBehaviour
 
     private LayerMask _ground;
     private LayerMask _wall;
-    
+    private Vector2 _faceDirection = Vector2.right;
+
     private void Awake()
     {
         _coll = GetComponent<Collider2D>();
@@ -60,23 +60,24 @@ public class CollisionDetector : MonoBehaviour
 
     private void Check()
     {
+        if (transform.localScale.x * _faceDirection.x < 0)
+            _faceDirection *= -1;
+        
         // 地面检测
         Vector2 pos = _coll.bounds.center;
         onGround = Physics2D.OverlapCircle(pos + groundCheckPos, groundCheckRadius, _ground);
             
         // 墙面检测
-        bool left = Physics2D.OverlapCircle(pos + leftWallCheckPos, wallCheckRadius, _wall);
-        bool right = Physics2D.OverlapCircle(pos + rightWallCheckPos, wallCheckRadius, _wall);
+        bool wallCheck = Physics2D.Raycast(pos + wallCheckPos, _faceDirection, wallCheckLength, _wall);
         if (location == PlayerLocation.Air)
         {
-            if (_input.moveInput < 0 && left || _input.moveInput > 0 && right)
-                onWall = true;
+            if (wallCheck && _input.moveInput != 0) onWall = true;
         }
         else if (_input.moveInput * transform.localScale.x > 0 || onGround)
         {
             onWall = false;
         }
-        touchWall = left || right;
+        touchWall = wallCheck;
 
         // 坡度检测
         var hit = Physics2D.Raycast(pos + slopeCheckPos, Vector2.down, rayCastLength, _ground);
@@ -110,15 +111,16 @@ public class CollisionDetector : MonoBehaviour
     public void OnDrawGizmosSelected()
     {
         var pos = _coll.bounds.center;
+
         Gizmos.color = onGround ? Color.green : Color.red;
         Gizmos.DrawWireSphere(pos + (Vector3)groundCheckPos, groundCheckRadius);
         
+        var from = pos + (Vector3)wallCheckPos;
         Gizmos.color = onWall ? Color.green : Color.red;
-        Gizmos.DrawWireSphere(pos + (Vector3)leftWallCheckPos, wallCheckRadius);
-        Gizmos.DrawWireSphere(pos + (Vector3)rightWallCheckPos, wallCheckRadius);
+        Gizmos.DrawLine(from, from + (Vector3)_faceDirection * wallCheckLength);
 
+        from = pos + (Vector3)slopeCheckPos;
         Gizmos.color = onSlope ? Color.green : Color.red;
-        var from = pos + (Vector3)slopeCheckPos;
         Gizmos.DrawLine(from, from + Vector3.down * rayCastLength);
     }
     #endif
