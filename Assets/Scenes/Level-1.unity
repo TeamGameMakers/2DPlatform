@@ -337,7 +337,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.272, y: 1.915, z: -10}
+  m_LocalPosition: {x: -6.77, y: -0.037, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2040,8 +2040,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548580080}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.272, y: 1.915, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.77, y: -0.037, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2064,8 +2064,11 @@ MonoBehaviour:
   location: 0
   groundCheckPos: {x: 0, y: -0.5}
   groundCheckRadius: 0.1
-  wallCheckPos: {x: 0, y: 0}
+  wallCheckPosUp: {x: 0, y: 0.495}
+  wallCheckPosMid: {x: 0, y: 0}
+  ledgeCheckPos: {x: 0.31, y: 0.495}
   wallCheckLength: 0.35
+  ledgeCheckLength: 0.5
   slopeCheckPos: {x: 0, y: -0.44}
   rayCastLength: 0.2
   maxAngle: 45
@@ -2073,6 +2076,8 @@ MonoBehaviour:
   onSlope: 0
   onWall: 0
   touchWall: 0
+  onLedge: 0
+  ledgeDistance: 0
 --- !u!114 &1548580090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2086,6 +2091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  wallSlideSpeed: 1
   jumpVelocity: 10
 --- !u!1 &1965733541
 GameObject:
