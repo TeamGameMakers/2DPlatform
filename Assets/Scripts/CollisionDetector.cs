@@ -13,7 +13,7 @@ public class CollisionDetector : MonoBehaviour
         Steep,
         Air,
         Wall,
-        Edge
+        Ledge
     }
     public PlayerLocation location;
 
@@ -22,9 +22,12 @@ public class CollisionDetector : MonoBehaviour
     [SerializeField] private float groundCheckRadius;
     
     [Header("Wall Check Settings")]
-    [SerializeField] private Vector2 wallCheckPos;
+    [SerializeField] private Vector2 wallCheckPosUp;
+    [SerializeField] private Vector2 wallCheckPosMid;
+    [SerializeField] private Vector2 ledgeCheckPos;
     [SerializeField] private float wallCheckLength;
-    
+    [SerializeField] private float ledgeCheckLength;
+
     [Header("Slope Check Settings")]
     [SerializeField] private Vector2 slopeCheckPos;
     [Tooltip("斜坡检测射线长度")]
@@ -39,6 +42,9 @@ public class CollisionDetector : MonoBehaviour
     public bool onSlope;
     public bool onWall;
     public bool touchWall;
+    public bool onLedge;
+
+    public float ledgeDistance;
 
     private LayerMask _ground;
     private LayerMask _wall;
@@ -61,23 +67,31 @@ public class CollisionDetector : MonoBehaviour
     private void Check()
     {
         if (transform.localScale.x * _faceDirection.x < 0)
+        {
             _faceDirection *= -1;
+            ledgeCheckPos.Set(ledgeCheckPos.x * -1, ledgeCheckPos.y);
+        }
         
         // 地面检测
         Vector2 pos = _coll.bounds.center;
         onGround = Physics2D.OverlapCircle(pos + groundCheckPos, groundCheckRadius, _ground);
             
         // 墙面检测
-        bool wallCheck = Physics2D.Raycast(pos + wallCheckPos, _faceDirection, wallCheckLength, _wall);
+        bool wallCheckUp = Physics2D.Raycast(pos + wallCheckPosUp, _faceDirection, wallCheckLength, _wall);
+        bool wallCheckMid = Physics2D.Raycast(pos + wallCheckPosMid, _faceDirection, wallCheckLength, _wall);
+        var ledgeCheck = Physics2D.Raycast(pos + ledgeCheckPos, Vector2.down, ledgeCheckLength, _wall);
+        ledgeDistance = ledgeCheck.distance;
         if (location == PlayerLocation.Air)
         {
-            if (wallCheck && _input.moveInput != 0) onWall = true;
+            if (_input.moveInput * transform.localScale.x > 0 && wallCheckUp && wallCheckMid) onWall = true;
+            
+            if (!wallCheckUp && wallCheckMid) onLedge = true;
         }
         else if (_input.moveInput * transform.localScale.x > 0 || onGround)
         {
-            onWall = false;
+            onWall = onLedge = false;
         }
-        touchWall = wallCheck;
+        touchWall = wallCheckMid;
 
         // 坡度检测
         var hit = Physics2D.Raycast(pos + slopeCheckPos, Vector2.down, rayCastLength, _ground);
@@ -105,6 +119,9 @@ public class CollisionDetector : MonoBehaviour
         
         if (!onGround && onWall) 
             location = PlayerLocation.Wall;
+
+        if (!onGround && onLedge)
+            location = PlayerLocation.Ledge;
     }
 
 #if UNITY_EDITOR
@@ -115,9 +132,14 @@ public class CollisionDetector : MonoBehaviour
         Gizmos.color = onGround ? Color.green : Color.red;
         Gizmos.DrawWireSphere(pos + (Vector3)groundCheckPos, groundCheckRadius);
         
-        var from = pos + (Vector3)wallCheckPos;
-        Gizmos.color = onWall ? Color.green : Color.red;
+        var from = pos + (Vector3)wallCheckPosUp;
+        Gizmos.color = onLedge ? Color.green : Color.red;
         Gizmos.DrawLine(from, from + (Vector3)_faceDirection * wallCheckLength);
+        from = pos + (Vector3)wallCheckPosMid;
+        Gizmos.color = onWall || onLedge ? Color.green : Color.red;
+        Gizmos.DrawLine(from, from + (Vector3)_faceDirection * wallCheckLength);
+        from = pos +  (Vector3)ledgeCheckPos;
+        Gizmos.DrawLine(from, from + Vector3.down * ledgeCheckLength);
 
         from = pos + (Vector3)slopeCheckPos;
         Gizmos.color = onSlope ? Color.green : Color.red;
