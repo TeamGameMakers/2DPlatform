@@ -8,16 +8,14 @@ public class PlayerControllerX : MonoBehaviour
     private Rigidbody2D _rb;
     private Animator _anim;
     private CollisionDetector _collDetector;
-    
+
     [Header("Movement")]
-    [SerializeField] private float speed = 3.5f;
-    // [SerializeField] private float airSpeedMultiplier = 0.5f;
+    [SerializeField] private float speed = 5f;
+    [SerializeField] private float wallSlideSpeed = 1;
     private float _currentSpeed;
 
     [Header("Jump")]
-    [SerializeField] private float jumpVelocity = 5;
-    // [SerializeField] private float jumpMultiplier = 1.0f;
-    // [SerializeField] private float fallMultiplier = 1.0f;
+    [SerializeField] private float jumpVelocity = 10;
     private bool _jumping;
     private bool _canJump;
     
@@ -70,6 +68,7 @@ public class PlayerControllerX : MonoBehaviour
             case CollisionDetector.PlayerLocation.Platform:
                 if (!_jumping)
                 {
+                    _rb.sharedMaterial.friction = 0.4f;
                     _rb.velocity = Vector2.right * xInput;
                     _canJump = true;
                 }
@@ -78,25 +77,27 @@ public class PlayerControllerX : MonoBehaviour
             case CollisionDetector.PlayerLocation.Slope:
                 if (!_jumping)
                 {
+                    _rb.sharedMaterial.friction = xInput == 0 ? 100000 : 0;
                     _rb.velocity = _collDetector.SlopeDirection * xInput;
                     _canJump = true;
                 }
                 break;
             
             case CollisionDetector.PlayerLocation.Steep:
+                _rb.sharedMaterial.friction = 0;
                 _canJump = false;
                 break;
             
             case CollisionDetector.PlayerLocation.Air:
                 _canJump = false;
-                //TODO: 滑墙速度
                 _rb.velocity = new Vector2(xInput, _rb.velocity.y);
                 break;
             
             case CollisionDetector.PlayerLocation.Wall:
                 _canJump = true;
-                _rb.velocity = new Vector2(xInput, -3f);
                 Flip(-xInput);
+                _rb.velocity = new Vector2(-transform.localScale.x * 2, -wallSlideSpeed);
+                _rb.sharedMaterial.friction = 0;
                 _jumping = false;
                 break;
             
@@ -139,6 +140,7 @@ public class PlayerControllerX : MonoBehaviour
         {
             waitTime -= Time.deltaTime;
             _rb.velocity = new Vector2(_input.moveInput * speed, _rb.velocity.y);
+            _rb.sharedMaterial.friction = 10;
             yield return null;
         }
 
