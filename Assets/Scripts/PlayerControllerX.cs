@@ -109,6 +109,7 @@ public class PlayerControllerX : MonoBehaviour
                 _canJump = true;
                 if (!_jumping)
                 {
+                    //BUG: 穿墙
                     _rb.velocity = new Vector2(transform.localScale.x * 2, _rb.velocity.y);
                     _material.friction = _collDetector.ledgeDistance < 0.01f ? 100000 : 0;
                 }
