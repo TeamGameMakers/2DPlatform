@@ -4,11 +4,11 @@ namespace Core.FSM
 {
     public class State
     {
-        protected StateMachine _stateMachine;
+        protected StateMachine stateMachine;
         
         public State(StateMachine stateMachine)
         {
-            _stateMachine = stateMachine;
+            this.stateMachine = stateMachine;
         }
     
         public virtual void Enter() {}

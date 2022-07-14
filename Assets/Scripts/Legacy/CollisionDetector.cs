@@ -5,7 +5,8 @@ namespace Legacy
     [ExecuteInEditMode]
     public class CollisionDetector : MonoBehaviour
     {
-        private GameInput _input;
+        // private GameInput _input;
+        private GameInputHandler _input;
         private Collider2D _coll;
     
         public enum PlayerLocation
@@ -55,7 +56,8 @@ namespace Legacy
         private void Awake()
         {
             _coll = GetComponent<Collider2D>();
-            _input = GetComponent<GameInput>();
+            // _input = GetComponent<GameInput>();
+            _input = GetComponent<GameInputHandler>();
             _ground = LayerMask.GetMask("Ground", "Wall");
             _wall = LayerMask.GetMask("Wall");
         }
@@ -85,11 +87,13 @@ namespace Legacy
             ledgeDistance = ledgeCheck.distance;
             if (location == PlayerLocation.Air)
             {
-                if (_input.moveInput * transform.localScale.x > 0 && wallCheckUp && wallCheckMid) onWall = true;
+                // if (_input.moveInput * transform.localScale.x > 0 && wallCheckUp && wallCheckMid) onWall = true;
+                if (_input.NormInputX * transform.localScale.x > 0 && wallCheckUp && wallCheckMid) onWall = true;
             
                 if (!wallCheckUp && wallCheckMid) onLedge = true;
             }
-            else if (_input.moveInput * transform.localScale.x > 0 || onGround)
+            // else if (_input.moveInput * transform.localScale.x > 0 || onGround)
+            else if (_input.NormInputX * transform.localScale.x > 0 || onGround)
             {
                 onWall = onLedge = false;
             }

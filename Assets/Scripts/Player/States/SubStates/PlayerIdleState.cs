@@ -1,14 +1,16 @@
 using Core.FSM;
-using UnityEngine;
 
-public class PlayerMoveState : PlayerGroundedState
+public class PlayerIdleState : PlayerGroundedState
 {
-    public PlayerMoveState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
+    public PlayerIdleState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
         base(player, data, animBoolName, stateMachine) { }
-    
+
+
     public override void Enter()
     {
         base.Enter();
+        
+        player.SetVelocityX(0.0f);
     }
 
     public override void Exit()
@@ -20,13 +22,10 @@ public class PlayerMoveState : PlayerGroundedState
     {
         base.LogicUpdate();
 
-        if (xInput == 0)
+        if (xInput != 0)
         {
-            _stateMachine.ChangeState(player.IdleState);
+            stateMachine.ChangeState(player.MoveState);
         }
-        
-        player.SetVelocityX(xInput);
-        player.Flip();
     }
 
     public override void PhysicsUpdate()

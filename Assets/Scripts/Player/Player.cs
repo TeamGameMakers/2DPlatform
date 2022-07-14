@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Core.FSM;
+using Legacy;
 
 public class Player: Entity
 {
@@ -10,6 +11,8 @@ public class Player: Entity
     
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
+    public PlayerInAirState AirState { get; private set; }
     
     #endregion
     
@@ -19,21 +22,32 @@ public class Player: Entity
     public Rigidbody2D RB { get; private set; }
     public GameInputHandler InputHandler { get; private set; }
     
+    public CollisionDetector CollDetector { get; private set; }
+    
     #endregion
+
+    private Vector2 _currentVelocity;
     
     public int FacingDirection { get; private set; }
+    public Vector2 CurrentVelocity => _currentVelocity;
 
     [SerializeField] private PlayerDataSO data;
+
+    private Vector2 _vec2Setter;
 
     private void Awake()
     {
         StateMachine = new StateMachine();
         IdleState = new PlayerIdleState(this, data, "idle", StateMachine);
         MoveState = new PlayerMoveState(this, data, "move", StateMachine);
+        JumpState = new PlayerJumpState(this, data, "air", StateMachine);
+        AirState = new PlayerInAirState(this, data, "air", StateMachine);
         
         Anim = GetComponent<Animator>();
         RB = GetComponent<Rigidbody2D>();
         InputHandler = GetComponent<GameInputHandler>();
+
+        CollDetector = GetComponent<CollisionDetector>();
     }
 
     private void Start()
@@ -44,6 +58,7 @@ public class Player: Entity
 
     private void Update()
     {
+        _currentVelocity = RB.velocity;
         StateMachine.CurrentState.LogicUpdate();
     }
 
@@ -52,9 +67,18 @@ public class Player: Entity
         StateMachine.CurrentState.PhysicsUpdate();
     }
 
-    public void SetVelocityX(float velocity)
+    public void SetVelocityX(float velocityX)
     {
-        RB.velocity = new Vector2(velocity * data.speed, RB.velocity.y);
+        _vec2Setter.Set(velocityX, _currentVelocity.y);
+        RB.velocity = _vec2Setter;
+        _currentVelocity = _vec2Setter;
+    }
+
+    public void SetVelocityY(float velocityY)
+    {
+        _vec2Setter.Set(_currentVelocity.x, velocityY);
+        RB.velocity = _vec2Setter;
+        _currentVelocity = _vec2Setter;
     }
 
     public void Flip()

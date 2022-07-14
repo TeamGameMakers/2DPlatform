@@ -4,5 +4,8 @@
 public class PlayerDataSO : ScriptableObject
 {
     [Header("Movement")] 
-    public float speed = 5.0f;
+    public float moveVelocity = 5.0f;
+
+    [Header("Jump")] 
+    public float jumpVelocity;
 }
