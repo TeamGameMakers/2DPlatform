@@ -1,4 +1,5 @@
-using Core.FSM;
+using Base.FSM;
+using UnityEngine;
 
 public class PlayerIdleState : PlayerGroundedState
 {
@@ -10,7 +11,7 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Enter();
         
-        player.SetVelocityX(0.0f);
+        core.Movement.SetVelocityX(0.0f);
     }
 
     public override void Exit()
@@ -21,8 +22,10 @@ public class PlayerIdleState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        
+        core.Movement.SetFriction(player.CollDetector.onSlope ? 100000 : 0.4f);
 
-        if (xInput != 0)
+        if (InputX != 0)
         {
             stateMachine.ChangeState(player.MoveState);
         }

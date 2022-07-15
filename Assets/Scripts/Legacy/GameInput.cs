@@ -2,56 +2,59 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput))]
-public class GameInput : MonoBehaviour
+namespace Legacy
 {
-    private PlayerInput _playerInput;
-    private InputAction _move;
-
-    public float moveInput;
-    public bool canMove = true;
-    public event Action JumpStartEvent;
-
-    private void Awake()
+    [RequireComponent(typeof(PlayerInput))]
+    public class GameInput : MonoBehaviour
     {
-        _playerInput = GetComponent<PlayerInput>();
-        _playerInput.onActionTriggered += GetMoveInput;
-        _playerInput.onActionTriggered += GetJumpInput;
-        
-        //记录 Action
-        _move = _playerInput.currentActionMap.FindAction("Move");
-    }
+        private PlayerInput _playerInput;
+        private InputAction _move;
 
-    private void GetMoveInput(InputAction.CallbackContext context)
-    {
-        if (context.action.name != "Move" || !canMove) return;
-        
-        moveInput = context.ReadValue<float>();
-    }
+        public float moveInput;
+        public bool canMove = true;
+        public event Action JumpStartEvent;
 
-    private void GetJumpInput(InputAction.CallbackContext context)
-    {
-        if (context.action.name != "Jump") return;
-        
-        if (context.started)
+        private void Awake()
         {
-            JumpStartEvent?.Invoke();
+            _playerInput = GetComponent<PlayerInput>();
+            _playerInput.onActionTriggered += GetMoveInput;
+            _playerInput.onActionTriggered += GetJumpInput;
+        
+            //记录 Action
+            _move = _playerInput.currentActionMap.FindAction("Move");
         }
 
-        else if (context.performed)
+        private void GetMoveInput(InputAction.CallbackContext context)
         {
-            //TODO: 长按大跳
+            if (context.action.name != "Move" || !canMove) return;
+        
+            moveInput = context.ReadValue<float>();
         }
-    }
+
+        private void GetJumpInput(InputAction.CallbackContext context)
+        {
+            if (context.action.name != "Jump") return;
+        
+            if (context.started)
+            {
+                JumpStartEvent?.Invoke();
+            }
+
+            else if (context.performed)
+            {
+                //TODO: 长按大跳
+            }
+        }
     
-    /// <summary>
-    /// 手动更新数值
-    /// </summary>
-    public void UpdateMoveInput()
-    {
-        if (_move.inProgress)
+        /// <summary>
+        /// 手动更新数值
+        /// </summary>
+        public void UpdateMoveInput()
         {
-            moveInput = _move.ReadValue<float>();
+            if (_move.inProgress)
+            {
+                moveInput = _move.ReadValue<float>();
+            }
         }
     }
 }

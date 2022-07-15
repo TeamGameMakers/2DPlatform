@@ -128,6 +128,8 @@ namespace Legacy
 
             if (!onGround && onLedge)
                 location = PlayerLocation.Ledge;
+
+            onSlope = _slopeAngle > 0 && _slopeAngle <= maxAngle;
         }
 
 #if UNITY_EDITOR

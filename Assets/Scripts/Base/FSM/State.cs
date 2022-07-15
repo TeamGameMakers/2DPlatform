@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Core.FSM
+namespace Base.FSM
 {
     public class State
     {

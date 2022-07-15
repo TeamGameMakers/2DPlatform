@@ -1,10 +1,21 @@
 using System;
+using Base.FSM;
 using UnityEngine;
-using Core.FSM;
 using Legacy;
+using Core;
 
 public class Player: Entity
 {
+    #region Component
+    
+    public Animator Anim { get; private set; }
+    public Rigidbody2D Rb { get; private set; }
+    public GameCore Core { get; private set; }
+    public GameInputHandler InputHandler { get; private set; }
+    public CollisionDetector CollDetector { get; private set; }
+    
+    #endregion
+    
     #region State Machine
     
     public StateMachine StateMachine { get; private set; }
@@ -13,16 +24,7 @@ public class Player: Entity
     public PlayerMoveState MoveState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
     public PlayerInAirState AirState { get; private set; }
-    
-    #endregion
-    
-    #region Component
-    
-    public Animator Anim { get; private set; }
-    public Rigidbody2D RB { get; private set; }
-    public GameInputHandler InputHandler { get; private set; }
-    
-    public CollisionDetector CollDetector { get; private set; }
+    public PlayerWallSlideState WallSlideState { get; private set; }
     
     #endregion
 
@@ -35,16 +37,21 @@ public class Player: Entity
 
     private Vector2 _vec2Setter;
 
+    private readonly int _animVelocityY = Animator.StringToHash("velocityY");
+
     private void Awake()
     {
+        Core = GetComponentInChildren<GameCore>();
+        
         StateMachine = new StateMachine();
         IdleState = new PlayerIdleState(this, data, "idle", StateMachine);
         MoveState = new PlayerMoveState(this, data, "move", StateMachine);
-        JumpState = new PlayerJumpState(this, data, "air", StateMachine);
+        JumpState = new PlayerJumpState(this, data, "jump", StateMachine);
         AirState = new PlayerInAirState(this, data, "air", StateMachine);
+        WallSlideState = new PlayerWallSlideState(this, data, "wall-slide", StateMachine);
         
         Anim = GetComponent<Animator>();
-        RB = GetComponent<Rigidbody2D>();
+        Rb = GetComponent<Rigidbody2D>();
         InputHandler = GetComponent<GameInputHandler>();
 
         CollDetector = GetComponent<CollisionDetector>();
@@ -55,31 +62,49 @@ public class Player: Entity
         StateMachine.Initialize(IdleState);
         FacingDirection = 1;
     }
-
-    private void Update()
-    {
-        _currentVelocity = RB.velocity;
-        StateMachine.CurrentState.LogicUpdate();
-    }
-
+    
     private void FixedUpdate()
     {
         StateMachine.CurrentState.PhysicsUpdate();
+    }
+    
+    private void Update()
+    {
+        _currentVelocity = Rb.velocity;
+        StateMachine.CurrentState.LogicUpdate();
+        Anim.SetFloat(_animVelocityY, CurrentVelocity.y);
+    }
+
+    #region Value Setter
+    
+    public void SetVelocity(Vector2 velocity)
+    {
+        Rb.velocity = velocity;
+        _currentVelocity = velocity;
     }
 
     public void SetVelocityX(float velocityX)
     {
         _vec2Setter.Set(velocityX, _currentVelocity.y);
-        RB.velocity = _vec2Setter;
+        Rb.velocity = _vec2Setter;
         _currentVelocity = _vec2Setter;
     }
 
     public void SetVelocityY(float velocityY)
     {
         _vec2Setter.Set(_currentVelocity.x, velocityY);
-        RB.velocity = _vec2Setter;
+        Rb.velocity = _vec2Setter;
         _currentVelocity = _vec2Setter;
     }
+
+    public void SetFriction(float friction)
+    {
+        var material = Rb.sharedMaterial;
+        material.friction = friction;
+        Rb.sharedMaterial = material;
+    }
+    
+    #endregion
 
     public void Flip()
     {

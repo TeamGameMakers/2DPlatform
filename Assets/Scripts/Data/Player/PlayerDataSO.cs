@@ -8,4 +8,12 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("Jump")] 
     public float jumpVelocity;
+    public int numOfJump = 1;
+    public float jumpHeightMultiplier;
+
+    [Header("Air")] 
+    public float coyoteTime;
+
+    [Header("Wall")] 
+    public float wallSlideVelocity;
 }

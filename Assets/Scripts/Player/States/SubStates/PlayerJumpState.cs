@@ -1,34 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Core.FSM;
+﻿using Base.FSM;
 using UnityEngine;
 
 public class PlayerJumpState : PlayerAbilityState
 {
-    public PlayerJumpState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
+    private int _numOfJump;
+
+    public bool CanJump => _numOfJump > 0;
+
+    public PlayerJumpState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) :
         base(player, data, animBoolName, stateMachine) { }
 
     public override void Enter()
     {
         base.Enter();
-        
-        player.SetVelocityY(data.jumpVelocity);
-
-        isAbilityDone = true;
-    }
-
-    public override void LogicUpdate()
-    {
-        base.LogicUpdate();
+        _numOfJump--;
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        core.Movement.SetVelocityY(data.jumpVelocity);
+        player.AirState.StartJumping();
+        isAbilityDone = true;
     }
 
-    public override void Exit()
-    {
-        base.Exit();
-    }
+    public void ResetNumOfJump() => _numOfJump = data.numOfJump;
+    public void DecreaseNumOfJump() => _numOfJump--;
 }

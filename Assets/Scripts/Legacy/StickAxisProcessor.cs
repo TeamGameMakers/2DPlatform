@@ -3,31 +3,34 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 #if UNITY_EDITOR
-[InitializeOnLoad]
-#endif
-public class StickAxisProcessor : InputProcessor<float>
+namespace Legacy
 {
-    #if UNITY_EDITOR
-    static StickAxisProcessor()
+    [InitializeOnLoad]
+#endif
+    public class StickAxisProcessor : InputProcessor<float>
     {
-        Initialize();
-    }
-    #endif
-    
-    [RuntimeInitializeOnLoadMethod]
-    private static void Initialize()
-    {
-        InputSystem.RegisterProcessor<StickAxisProcessor>();
-    }
-    
-    
-    public override float Process(float value, InputControl control)
-    {
-        return value switch
+#if UNITY_EDITOR
+        static StickAxisProcessor()
         {
-            > 0 => 1.0f,
-            0 => 0.0f,
-            _ => -1.0f
-        };
+            Initialize();
+        }
+#endif
+    
+        [RuntimeInitializeOnLoadMethod]
+        private static void Initialize()
+        {
+            InputSystem.RegisterProcessor<StickAxisProcessor>();
+        }
+    
+    
+        public override float Process(float value, InputControl control)
+        {
+            return value switch
+            {
+                > 0 => 1.0f,
+                0 => 0.0f,
+                _ => -1.0f
+            };
+        }
     }
 }

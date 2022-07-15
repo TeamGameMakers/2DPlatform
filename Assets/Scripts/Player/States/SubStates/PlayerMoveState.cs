@@ -1,4 +1,4 @@
-using Core.FSM;
+using Base.FSM;
 using UnityEngine;
 
 public class PlayerMoveState : PlayerGroundedState
@@ -20,12 +20,18 @@ public class PlayerMoveState : PlayerGroundedState
     {
         base.LogicUpdate();
 
-        if (xInput == 0)
+        if (InputX == 0)
         {
             stateMachine.ChangeState(player.IdleState);
         }
-        
-        player.SetVelocityX(xInput * data.moveVelocity);
+
+        if (player.CollDetector.onSlope)
+        {
+            core.Movement.SetFriction(0);
+            core.Movement.SetVelocity(InputX * data.moveVelocity * player.CollDetector.SlopeDirection);
+        }
+        else
+            core.Movement.SetVelocityX(InputX * data.moveVelocity);
         player.Flip();
     }
 

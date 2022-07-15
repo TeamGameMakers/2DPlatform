@@ -1,4 +1,4 @@
-namespace Core.FSM
+namespace Base.FSM
 {
     public class StateMachine
     {

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,13 +43,14 @@ public class GameInputHandler : MonoBehaviour
         {
             case InputActionPhase.Started:
                 JumpInput.press = true;
+                JumpInput.hold = false;
                 break;
             case InputActionPhase.Performed:
                 JumpInput.hold = true;
                 break;
             case InputActionPhase.Canceled:
-                JumpInput.press = false;
                 JumpInput.hold = false;
+                JumpInput.press = false;
                 break;
         }
     }
@@ -60,6 +58,11 @@ public class GameInputHandler : MonoBehaviour
 
 public sealed class JumpInputInfo
 {
-    public bool press;
-    public bool hold;
+    internal bool press;
+    internal bool hold;
+
+    public bool Press => press;
+    public bool Hold => hold;
+    
+    public void UseJumpInput() => press = false;
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Core.FSM
+namespace Base.FSM
 {
     public class Entity: MonoBehaviour
     {

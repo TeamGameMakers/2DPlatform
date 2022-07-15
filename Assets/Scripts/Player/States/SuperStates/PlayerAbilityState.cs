@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Core.FSM;
+using Base.FSM;
 using UnityEngine;
 
 public class PlayerAbilityState : PlayerState
@@ -23,8 +23,10 @@ public class PlayerAbilityState : PlayerState
 
         if (isAbilityDone)
         {
-            if (player.CollDetector.onGround)
+            if (player.CollDetector.onGround && core.Movement.CurrentVelocity.y < 0.01f)
+            {
                 stateMachine.ChangeState(player.IdleState);
+            }
             else
                 stateMachine.ChangeState(player.AirState);
         }
