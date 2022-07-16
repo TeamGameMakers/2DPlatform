@@ -1882,6 +1882,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1105684799}
+  - {fileID: 1733014833}
   m_Father: {fileID: 1548580088}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1897,6 +1898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eed4d2d61fe5bf942a3815b0115e8995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  detectionSetting: {fileID: 0}
 --- !u!1 &1548580080
 GameObject:
   m_ObjectHideFlags: 0
@@ -1913,7 +1915,6 @@ GameObject:
   - component: {fileID: 1548580091}
   - component: {fileID: 1548580092}
   - component: {fileID: 1548580089}
-  - component: {fileID: 1548580093}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2113,35 +2114,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 6a6d9305b4eb2e34b80ee734ffd1a087, type: 2}
---- !u!114 &1548580093
+--- !u!1 &1733014832
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1733014833}
+  - component: {fileID: 1733014834}
+  m_Layer: 0
+  m_Name: Detection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1733014833
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733014832}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1545315007}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1733014834
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1548580080}
+  m_GameObject: {fileID: 1733014832}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dba8570ee876f9b438c14ba0caba60e5, type: 3}
+  m_Script: {fileID: 11500000, guid: 6637c25756b946bf89ee7fc809562d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  location: 0
   groundCheckPos: {x: 0, y: -0.48}
   groundCheckRadius: 0.13
-  wallCheckPosUp: {x: 0, y: 0}
+  wallCheckPosUp: {x: 0, y: 0.51}
   wallCheckPosMid: {x: 0, y: 0}
-  ledgeCheckPos: {x: 0, y: 0}
   wallCheckLength: 0.3
-  ledgeCheckLength: 0
-  slopeCheckPos: {x: 0, y: -0.48}
-  rayCastLength: 0.2
+  slopeCheckDistance: 0.2
   maxAngle: 45
-  onGround: 0
-  onSlope: 0
-  onWall: 0
+  grounded: 0
   touchWall: 0
-  onLedge: 0
-  ledgeDistance: 0
+  touchLedge: 0
+  onSlope: 0
+  onSteep: 0
 --- !u!1 &2120119260
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,14 +25,15 @@ public class PlayerMoveState : PlayerGroundedState
             stateMachine.ChangeState(player.IdleState);
         }
 
-        if (player.CollDetector.onSlope)
+        if (core.Detection.SlopeAngle > 0)
         {
             core.Movement.SetFriction(0);
-            core.Movement.SetVelocity(InputX * data.moveVelocity * player.CollDetector.SlopeDirection);
+            core.Movement.SetVelocity(InputX * data.moveVelocity * core.Detection.SlopeDirection);
         }
         else
             core.Movement.SetVelocityX(InputX * data.moveVelocity);
-        player.Flip();
+
+        core.Movement.Flip(InputX);
     }
 
     public override void PhysicsUpdate()

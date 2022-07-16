@@ -17,7 +17,7 @@ public class PlayerGroundedState: PlayerState
     {
         base.LogicUpdate();
 
-        if (!player.CollDetector.onGround)
+        if (!core.Detection.grounded)
         {
             player.AirState.StartCoyoteTime();
             stateMachine.ChangeState(player.AirState);

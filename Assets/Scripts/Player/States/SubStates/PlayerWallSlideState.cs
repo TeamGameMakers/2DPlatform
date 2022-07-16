@@ -9,18 +9,22 @@ public class PlayerWallSlideState : PlayerAbilityState
     public override void Enter()
     {
         base.Enter();
+        core.Movement.Flip(-player.transform.right.x);
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+        if (core.Detection.grounded)
+            stateMachine.ChangeState(player.IdleState);
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
         core.Movement.SetFriction(0);
-        core.Movement.SetVelocityX(player.transform.right.x);
+        core.Movement.SetVelocityX(-player.transform.right.x * 2);
         core.Movement.SetVelocityY(-data.wallSlideVelocity);
     }
 }
