@@ -22,8 +22,13 @@ public class PlayerIdleState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        
-        core.Movement.SetFriction(player.CollDetector.onSlope ? 100000 : 0.4f);
+
+        if (core.Detection.onSlope)
+            core.Movement.SetFriction(100000);
+        else if (core.Detection.onSteep)
+            core.Movement.SetFriction(0);
+        else
+            core.Movement.SetFriction(0.3f);
 
         if (InputX != 0)
         {
