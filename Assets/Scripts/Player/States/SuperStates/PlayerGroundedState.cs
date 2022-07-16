@@ -17,26 +17,21 @@ public class PlayerGroundedState: PlayerState
     {
         base.LogicUpdate();
 
-        if (!player.CollDetector.onGround)
+        if (!core.Detection.grounded)
         {
             player.AirState.StartCoyoteTime();
             stateMachine.ChangeState(player.AirState);
         }
 
-        if (JumpInput.Press && player.JumpState.CanJump)
+        if (JumpInput.Press && player.JumpState.CanJump && !core.Detection.onSteep)
         {
             JumpInput.UseJumpInput();
             stateMachine.ChangeState(player.JumpState);
         }
-    }
-
-    public override void PhysicsUpdate()
-    {
-        base.PhysicsUpdate();
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
+        
+        if (core.Detection.onSteep)
+            core.Movement.SetFriction(0.3f);
+        else
+            core.Movement.SetFriction(0.3f);
     }
 }
