@@ -22,14 +22,13 @@ public class PlayerIdleState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        
+        core.Movement.SetFriction(player.CollDetector.onSlope ? 100000 : 0.4f);
 
         if (InputX != 0)
         {
             stateMachine.ChangeState(player.MoveState);
         }
-        
-        if (core.Detection.onSlope)
-            core.Movement.SetFriction(100000);
     }
 
     public override void PhysicsUpdate()

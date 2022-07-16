@@ -104,8 +104,8 @@ namespace Legacy
             _slopeAngle = Vector2.Angle(Vector2.up, hit.normal);
             _slopeDirection = Vector2.Perpendicular(hit.normal);
         
-            // Debug.DrawRay(hit.point, hit.normal, Color.green);
-            // Debug.DrawRay(hit.point, _slopeDirection, Color.red);
+            Debug.DrawRay(hit.point, hit.normal, Color.green);
+            Debug.DrawRay(hit.point, _slopeDirection, Color.red);
         
         }
 

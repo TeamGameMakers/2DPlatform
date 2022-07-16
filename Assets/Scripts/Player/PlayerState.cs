@@ -12,7 +12,7 @@ public class PlayerState : State
     private readonly int _animBoolHash;
     
     protected JumpInputInfo JumpInput { get; private set; }
-    protected int InputX { get; private set; }
+    protected float InputX { get; private set; }
 
     protected PlayerState(Player player, PlayerDataSO data, string animBoolName,StateMachine stateMachine) : 
         base(stateMachine)

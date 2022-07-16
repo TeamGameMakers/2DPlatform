@@ -19,16 +19,16 @@ public class PlayerInAirState : PlayerState
     {
         base.LogicUpdate();
         
-        core.Movement.Flip(InputX);
+        player.Flip();
         
         // 状态转换
-        if (core.Detection.grounded && core.Movement.CurrentVelocity.y < 0.01f)
+        if (player.CollDetector.onGround && core.Movement.CurrentVelocity.y < 0.01f)
             stateMachine.ChangeState(player.IdleState);
         
-        if (core.Detection.grounded && core.Detection.SlopeAngle > 0 && core.Movement.CurrentVelocity.y < 5f)
+        if (player.CollDetector.onGround && player.CollDetector.onSlope && core.Movement.CurrentVelocity.y < 5f)
             stateMachine.ChangeState(player.IdleState);
         
-        if (core.Detection.touchWall && InputX == core.Movement.FaceDirection)
+        if (player.CollDetector.onWall)
             stateMachine.ChangeState(player.WallSlideState);
         
         if (JumpInput.Press) 

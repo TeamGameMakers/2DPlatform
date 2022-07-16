@@ -25,14 +25,14 @@ public class PlayerMoveState : PlayerGroundedState
             stateMachine.ChangeState(player.IdleState);
         }
 
-        if (core.Detection.onSlope)
-            core.Movement.SetVelocity(InputX * data.moveVelocity * core.Detection.SlopeDirection);
-        else if (core.Detection.onSteep)
-            core.Movement.SetVelocity(core.Movement.CurrentVelocity);
+        if (player.CollDetector.onSlope)
+        {
+            core.Movement.SetFriction(0);
+            core.Movement.SetVelocity(InputX * data.moveVelocity * player.CollDetector.SlopeDirection);
+        }
         else
             core.Movement.SetVelocityX(InputX * data.moveVelocity);
-
-        core.Movement.Flip(InputX);
+        player.Flip();
     }
 
     public override void PhysicsUpdate()

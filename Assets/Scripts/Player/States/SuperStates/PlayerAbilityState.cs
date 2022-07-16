@@ -23,7 +23,7 @@ public class PlayerAbilityState : PlayerState
 
         if (isAbilityDone)
         {
-            if (core.Detection.grounded && core.Movement.CurrentVelocity.y < 0.01f)
+            if (player.CollDetector.onGround && core.Movement.CurrentVelocity.y < 0.01f)
             {
                 stateMachine.ChangeState(player.IdleState);
             }
