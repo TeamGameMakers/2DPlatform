@@ -22,6 +22,7 @@ public class Player: Entity
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
+    public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerInAirState AirState { get; private set; }
     public PlayerWallSlideState WallSlideState { get; private set; }
     
@@ -39,6 +40,7 @@ public class Player: Entity
         IdleState = new PlayerIdleState(this, data, "idle", StateMachine);
         MoveState = new PlayerMoveState(this, data, "move", StateMachine);
         JumpState = new PlayerJumpState(this, data, "jump", StateMachine);
+        WallJumpState = new PlayerWallJumpState(this, data, "jump", StateMachine);
         AirState = new PlayerInAirState(this, data, "air", StateMachine);
         WallSlideState = new PlayerWallSlideState(this, data, "wall-slide", StateMachine);
         

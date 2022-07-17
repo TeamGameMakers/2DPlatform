@@ -5,6 +5,7 @@ public class PlayerInAirState : PlayerState
 {
     private bool _inCoyoteTime;
     private bool _jumping;
+    private bool _canWallSlide;
 
     public PlayerInAirState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
         base(player, data, animBoolName, stateMachine) { }
@@ -13,6 +14,8 @@ public class PlayerInAirState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        _canWallSlide = !core.Detection.touchWall;
+        core.Movement.SetFriction(0);
     }
 
     public override void LogicUpdate()
@@ -28,7 +31,7 @@ public class PlayerInAirState : PlayerState
         if (core.Detection.grounded && core.Detection.onSlope && core.Movement.CurrentVelocity.y < 5f)
             stateMachine.ChangeState(player.IdleState);
         
-        if (core.Detection.touchWall && InputX == core.Movement.FaceDirection)
+        if (core.Detection.touchWall && InputX == core.Movement.FaceDirection && _canWallSlide)
             stateMachine.ChangeState(player.WallSlideState);
         
         if (JumpInput.Press) 
@@ -54,7 +57,10 @@ public class PlayerInAirState : PlayerState
                 _jumping = false;
             }
             else if (core.Movement.CurrentVelocity.y < 0.0f)
+            {
                 _jumping = false;
+                _canWallSlide = true;
+            }
         }
     }
 

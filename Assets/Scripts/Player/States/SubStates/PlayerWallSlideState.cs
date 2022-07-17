@@ -9,6 +9,7 @@ public class PlayerWallSlideState : PlayerAbilityState
     public override void Enter()
     {
         base.Enter();
+        player.JumpState.ResetNumOfJump();
         core.Movement.Flip(-player.transform.right.x);
     }
 
@@ -18,6 +19,12 @@ public class PlayerWallSlideState : PlayerAbilityState
 
         if (core.Detection.grounded)
             stateMachine.ChangeState(player.IdleState);
+        
+        if (InputX * core.Movement.FaceDirection > 0)
+            stateMachine.ChangeState(player.AirState);
+        
+        if (JumpInput.Press)
+            stateMachine.ChangeState(player.WallJumpState);
     }
 
     public override void PhysicsUpdate()

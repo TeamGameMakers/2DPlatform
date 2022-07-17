@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class PlayerState : State
 {
-    protected GameCore core;
+    protected readonly GameCore core;
     protected readonly Player player;
-    protected PlayerDataSO data;
+    protected readonly PlayerDataSO data;
     protected float startTime;
     
     private readonly int _animBoolHash;
     
     protected JumpInputInfo JumpInput { get; private set; }
     protected int InputX { get; private set; }
+    protected int InputY { get; private set; }
 
     protected PlayerState(Player player, PlayerDataSO data, string animBoolName,StateMachine stateMachine) : 
         base(stateMachine)
@@ -34,6 +35,7 @@ public class PlayerState : State
     {
         JumpInput = player.InputHandler.JumpInput;
         InputX = player.InputHandler.NormInputX;
+        InputY = player.InputHandler.NormInputY;
     }
 
     public override void Exit()
