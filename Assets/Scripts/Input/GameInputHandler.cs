@@ -7,6 +7,7 @@ public class GameInputHandler : MonoBehaviour
     private PlayerInput _playerInput;
 
     private InputAction _move;
+    private bool _moveInputLock;
     
     public Vector2 RawMoveInput { get; private set; }
     public int NormInputX { get; private set; }
@@ -29,10 +30,22 @@ public class GameInputHandler : MonoBehaviour
 
     private void OnMoveInput(InputAction.CallbackContext context)
     {
-        if (context.action != _move) return;
+        if (context.action != _move || _moveInputLock) return;
         RawMoveInput = context.ReadValue<Vector2>();
         NormInputX = Mathf.RoundToInt(RawMoveInput.x);
         NormInputY = Mathf.RoundToInt(RawMoveInput.y);
+    }
+
+    public void LockMoveInputX(int value)
+    {
+        _moveInputLock = true;
+        NormInputX = value;
+    }
+
+    public void UnLockMoveInputX()
+    {
+        _moveInputLock = false;
+        NormInputX = Mathf.RoundToInt(_move.ReadValue<Vector2>().x);
     }
 
     private void OnJumpInput(InputAction.CallbackContext context)

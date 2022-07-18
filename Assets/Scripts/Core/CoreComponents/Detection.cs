@@ -38,6 +38,8 @@ namespace Core
         private float _slopeAngle;
         public float SlopeAngle => _slopeAngle;
         public Vector2 SlopeDirection { get; private set; }
+        
+        public float WallDirection { get; private set; }
 
         private void Awake()
         {
@@ -76,6 +78,8 @@ namespace Core
             
             touchWall = mid && up;
             touchLedge = mid && !up;
+
+            WallDirection = touchWall ? -mid.normal.x : 0;
         }
 
 #if UNITY_EDITOR

@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerAbilityState : PlayerState
 {
     protected bool isAbilityDone;
-    
-    public PlayerAbilityState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
+
+    protected PlayerAbilityState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
         base(player, data, animBoolName, stateMachine) { }
 
     public override void Enter()
@@ -24,9 +24,11 @@ public class PlayerAbilityState : PlayerState
         if (isAbilityDone)
         {
             if (core.Detection.grounded && core.Movement.CurrentVelocity.y < 0.01f)
-            {
                 stateMachine.ChangeState(player.IdleState);
-            }
+
+            else if (core.Detection.touchWall)
+                stateMachine.ChangeState(player.WallSlideState);
+            
             else
                 stateMachine.ChangeState(player.AirState);
         }

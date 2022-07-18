@@ -23,6 +23,8 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.LogicUpdate();
 
+        if (Exiting) return;
+        
         if (core.Detection.onSlope)
             core.Movement.SetFriction(100000);
         else if (core.Detection.onSteep)

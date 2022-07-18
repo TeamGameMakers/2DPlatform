@@ -11,6 +11,10 @@ public class PlayerDataSO : ScriptableObject
     public int numOfJump = 1;
     public float jumpHeightMultiplier;
 
+    public float wallJumpVelocity;
+    public float wallJumpTime;
+    [Range(0, 90)] public float wallJumpAngle;
+
     [Header("Air")] 
     public float coyoteTime;
 

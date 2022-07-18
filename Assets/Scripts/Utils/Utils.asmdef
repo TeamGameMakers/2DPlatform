@@ -1,9 +1,7 @@
 {
-    "name": "Data",
+    "name": "Utils",
     "rootNamespace": "",
-    "references": [
-        "GUID:62b6523002a116745948dd70ed268135"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerGroundedState: PlayerState
 {
+    protected bool Exiting { get; private set; }
+    
     protected PlayerGroundedState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
         base(player, data, animBoolName, stateMachine) { }
 
@@ -11,6 +13,7 @@ public class PlayerGroundedState: PlayerState
         base.Enter();
         
         player.JumpState.ResetNumOfJump();
+        Exiting = false;
     }
 
     public override void LogicUpdate()
@@ -38,5 +41,6 @@ public class PlayerGroundedState: PlayerState
     public override void Exit()
     {
         base.Exit();
+        Exiting = true;
     }
 }

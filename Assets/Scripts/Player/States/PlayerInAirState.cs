@@ -28,10 +28,10 @@ public class PlayerInAirState : PlayerState
         if (core.Detection.grounded && core.Movement.CurrentVelocity.y < 0.01f)
             stateMachine.ChangeState(player.IdleState);
         
-        if (core.Detection.grounded && core.Detection.onSlope && core.Movement.CurrentVelocity.y < 5f)
+        else if (core.Detection.grounded && core.Detection.onSlope && core.Movement.CurrentVelocity.y < 5f)
             stateMachine.ChangeState(player.IdleState);
         
-        if (core.Detection.touchWall && InputX == core.Movement.FaceDirection && _canWallSlide)
+        else if (core.Detection.touchWall && InputX * core.Detection.WallDirection > 0)
             stateMachine.ChangeState(player.WallSlideState);
         
         if (JumpInput.Press) 
@@ -62,11 +62,6 @@ public class PlayerInAirState : PlayerState
                 _canWallSlide = true;
             }
         }
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
     }
 
     private void CheckCoyoteTime()

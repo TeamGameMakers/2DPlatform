@@ -4,8 +4,6 @@ namespace Core
 {
     public class GameCore : MonoBehaviour
     {
-        public DetectionSettingSO detectionSetting;
-        
         public Movement Movement { get; private set; }
         public Detection Detection { get; private set; }
 

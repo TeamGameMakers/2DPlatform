@@ -12,6 +12,7 @@ namespace Core
         private Vector2 _currentVelocity;
         public Vector2 CurrentVelocity => _currentVelocity;
         public int FaceDirection { get; private set; }
+        public bool PushingWall => _currentVelocity.x * FaceDirection > 0; 
 
         protected void Awake()
         {
