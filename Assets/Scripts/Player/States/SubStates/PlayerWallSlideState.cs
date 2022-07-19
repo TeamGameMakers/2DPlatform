@@ -1,7 +1,7 @@
 using Base.FSM;
 using UnityEngine;
 
-public class PlayerWallSlideState : PlayerAbilityState
+public class PlayerWallSlideState : PlayerState
 {
     public PlayerWallSlideState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
         base(player, data, animBoolName, stateMachine) { }
@@ -10,7 +10,12 @@ public class PlayerWallSlideState : PlayerAbilityState
     {
         base.Enter();
         player.JumpState.ResetNumOfJump();
-        core.Movement.Flip(-player.transform.right.x);
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        core.Movement.Flip(-core.Movement.FaceDirection);
     }
 
     public override void LogicUpdate()
@@ -20,7 +25,7 @@ public class PlayerWallSlideState : PlayerAbilityState
         if (core.Detection.grounded)
             stateMachine.ChangeState(player.IdleState);
 
-        if (InputX * core.Movement.FaceDirection > 0)
+        if (InputX * core.Movement.FaceDirection < 0 || !core.Detection.touchWall)
         {
             player.JumpState.DecreaseNumOfJump();
             stateMachine.ChangeState(player.AirState);
@@ -36,8 +41,9 @@ public class PlayerWallSlideState : PlayerAbilityState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+
         core.Movement.SetFriction(0);
-        core.Movement.SetVelocityX(-player.transform.right.x * 3);
+        core.Movement.SetVelocityX(core.Movement.FaceDirection * 3);
         core.Movement.SetVelocityY(-data.wallSlideVelocity);
     }
 }

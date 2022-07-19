@@ -1,7 +1,7 @@
 ﻿using Base.FSM;
-using Codice.Client.BaseCommands.Merge.Restorer.Finder;
 using Utils.Extensions;
 using UnityEngine;
+using System.Collections;
 
 public class PlayerWallJumpState: PlayerAbilityState
 {
@@ -20,7 +20,8 @@ public class PlayerWallJumpState: PlayerAbilityState
         _direction.Set(_direction.x * core.Movement.FaceDirection, _direction.y);
         core.Movement.SetVelocity(_direction * data.wallJumpVelocity);
         _time = data.wallJumpTime;
-        player.InputHandler.LockMoveInputX(core.Movement.FaceDirection);
+
+        player.StartCoroutine(ConsistenceWallJump());
     }
 
     public override void LogicUpdate()
@@ -34,9 +35,15 @@ public class PlayerWallJumpState: PlayerAbilityState
         }
     }
 
-    public override void Exit()
+    private IEnumerator ConsistenceWallJump()
     {
-        base.Exit();
+        player.InputHandler.LockMoveInputX(core.Movement.FaceDirection);
+
+        while (!core.Detection.grounded && player.InputHandler.MoveInputLock)
+        {
+            yield return null;
+        }
+        
         player.InputHandler.UnLockMoveInputX();
     }
 }

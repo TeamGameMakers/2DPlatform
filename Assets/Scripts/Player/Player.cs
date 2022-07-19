@@ -11,8 +11,7 @@ public class Player: Entity
     public Animator Anim { get; private set; }
     public GameCore Core { get; private set; }
     public GameInputHandler InputHandler { get; private set; }
-    public CollisionDetector CollDetector { get; private set; }
-    
+
     #endregion
     
     #region State Machine
@@ -46,8 +45,6 @@ public class Player: Entity
         
         Anim = GetComponent<Animator>();
         InputHandler = GetComponent<GameInputHandler>();
-
-        CollDetector = GetComponent<CollisionDetector>();
     }
 
     private void Start()
@@ -57,12 +54,12 @@ public class Player: Entity
     
     private void FixedUpdate()
     {
+        Core.LogicUpdate();
         StateMachine.CurrentState.PhysicsUpdate();
     }
     
     private void Update()
     {
-        Core.LogicUpdate();
         StateMachine.CurrentState.LogicUpdate();
         Anim.SetFloat(_animVelocityY, Core.Movement.CurrentVelocity.y);
     }

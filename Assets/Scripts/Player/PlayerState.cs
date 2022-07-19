@@ -11,6 +11,7 @@ public class PlayerState : State
     
     private readonly int _animBoolHash;
     
+    protected bool Exiting { get; private set; }
     protected JumpInputInfo JumpInput { get; private set; }
     protected int InputX { get; private set; }
     protected int InputY { get; private set; }
@@ -29,6 +30,9 @@ public class PlayerState : State
         startTime = Time.time;
         player.Anim.SetBool(_animBoolHash, true);
         JumpInput = player.InputHandler.JumpInput;
+        InputX = player.InputHandler.NormInputX;
+        InputY = player.InputHandler.NormInputY;
+        Exiting = false;
     }
 
     public override void LogicUpdate()
@@ -41,5 +45,6 @@ public class PlayerState : State
     public override void Exit()
     {
         player.Anim.SetBool(_animBoolHash, false);
+        Exiting = true;
     }
 }

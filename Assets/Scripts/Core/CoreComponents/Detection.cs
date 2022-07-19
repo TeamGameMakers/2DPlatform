@@ -39,7 +39,7 @@ namespace Core
         public float SlopeAngle => _slopeAngle;
         public Vector2 SlopeDirection { get; private set; }
         
-        public float WallDirection { get; private set; }
+        public float WallLocation { get; private set; }
 
         private void Awake()
         {
@@ -52,7 +52,6 @@ namespace Core
         internal void LogicUpdate()
         {
             _center = _coll.bounds.center;
-
             grounded = Physics2D.OverlapCircle(_center + groundCheckPos, groundCheckRadius, _ground);
             GetSlopeInfo();
             GetWallInfo();
@@ -75,11 +74,11 @@ namespace Core
         {
             var mid = Physics2D.Raycast(_center + wallCheckPosMid, transform.right, wallCheckLength, _wall);
             var up = Physics2D.Raycast(_center + wallCheckPosUp, transform.right, wallCheckLength, _wall);
-            
+
             touchWall = mid && up;
             touchLedge = mid && !up;
 
-            WallDirection = touchWall ? -mid.normal.x : 0;
+            WallLocation = touchWall ? -mid.normal.x : 0;
         }
 
 #if UNITY_EDITOR

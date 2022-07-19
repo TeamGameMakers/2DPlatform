@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,8 +8,8 @@ public class GameInputHandler : MonoBehaviour
     private PlayerInput _playerInput;
 
     private InputAction _move;
-    private bool _moveInputLock;
     
+    public bool MoveInputLock {get; private set;}
     public Vector2 RawMoveInput { get; private set; }
     public int NormInputX { get; private set; }
     public int NormInputY { get; private set; }
@@ -28,9 +29,18 @@ public class GameInputHandler : MonoBehaviour
         _playerInput.onActionTriggered += OnJumpInput;
     }
 
+    private void Update()
+    {
+        // 移动锁住时，重新按下按钮解除锁
+        if (MoveInputLock && _move.triggered)
+        {
+            UnLockMoveInputX();
+        }
+    }
+
     private void OnMoveInput(InputAction.CallbackContext context)
     {
-        if (context.action != _move || _moveInputLock) return;
+        if (context.action != _move || MoveInputLock) return;
         RawMoveInput = context.ReadValue<Vector2>();
         NormInputX = Mathf.RoundToInt(RawMoveInput.x);
         NormInputY = Mathf.RoundToInt(RawMoveInput.y);
@@ -38,13 +48,13 @@ public class GameInputHandler : MonoBehaviour
 
     public void LockMoveInputX(int value)
     {
-        _moveInputLock = true;
+        MoveInputLock = true;
         NormInputX = value;
     }
 
     public void UnLockMoveInputX()
     {
-        _moveInputLock = false;
+        MoveInputLock = false;
         NormInputX = Mathf.RoundToInt(_move.ReadValue<Vector2>().x);
     }
 

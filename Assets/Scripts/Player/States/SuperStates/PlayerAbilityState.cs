@@ -25,10 +25,6 @@ public class PlayerAbilityState : PlayerState
         {
             if (core.Detection.grounded && core.Movement.CurrentVelocity.y < 0.01f)
                 stateMachine.ChangeState(player.IdleState);
-
-            else if (core.Detection.touchWall)
-                stateMachine.ChangeState(player.WallSlideState);
-            
             else
                 stateMachine.ChangeState(player.AirState);
         }
