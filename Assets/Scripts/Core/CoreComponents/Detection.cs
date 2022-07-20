@@ -39,7 +39,7 @@ namespace Core
         public float SlopeAngle => _slopeAngle;
         public Vector2 SlopeDirection { get; private set; }
         
-        public float WallLocation { get; private set; }
+        public int WallLocation { get; private set; }
 
         private void Awake()
         {
@@ -78,7 +78,7 @@ namespace Core
             touchWall = mid && up;
             touchLedge = mid && !up;
 
-            WallLocation = touchWall ? -mid.normal.x : 0;
+            WallLocation = touchWall ? (int)-mid.normal.x : 0;
         }
 
 #if UNITY_EDITOR

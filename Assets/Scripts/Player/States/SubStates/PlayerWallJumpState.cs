@@ -22,28 +22,27 @@ public class PlayerWallJumpState: PlayerAbilityState
         _time = data.wallJumpTime;
 
         player.StartCoroutine(ConsistenceWallJump());
+        isAbilityDone = true;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
         
-        _time -= Time.deltaTime;
-        if (_time < 0 || core.Detection.touchWall || core.Detection.touchLedge)
-        {
-            isAbilityDone = true;
-        }
+        // _time -= Time.deltaTime;
+        // if (_time < 0 || core.Detection.touchLedge)
+        // {
+        //     isAbilityDone = true;
+        // }
     }
 
     private IEnumerator ConsistenceWallJump()
     {
         player.InputHandler.LockMoveInputX(core.Movement.FaceDirection);
 
-        while (!core.Detection.grounded && player.InputHandler.MoveInputLock)
-        {
+        while (!core.Detection.grounded && player.InputHandler.MoveInputLock && !player.WallSlideState.Sliding)
             yield return null;
-        }
-        
+
         player.InputHandler.UnLockMoveInputX();
     }
 }

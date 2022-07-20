@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class PlayerWallSlideState : PlayerState
 {
+    private float timer;
+    public bool Sliding { get; private set; }
+
     public PlayerWallSlideState(Player player, PlayerDataSO data, string animBoolName, StateMachine stateMachine) : 
         base(player, data, animBoolName, stateMachine) { }
 
@@ -10,17 +13,22 @@ public class PlayerWallSlideState : PlayerState
     {
         base.Enter();
         player.JumpState.ResetNumOfJump();
+        timer = 0.2f;
     }
 
     public override void Exit()
     {
         base.Exit();
+        Sliding = false;
         core.Movement.Flip(-core.Movement.FaceDirection);
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+        if (timer > 0) timer -= Time.deltaTime;
+        else Sliding = true;
 
         if (core.Detection.grounded)
             stateMachine.ChangeState(player.IdleState);
