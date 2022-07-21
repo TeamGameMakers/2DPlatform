@@ -11,12 +11,14 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Enter();
         
+        if (core.Detection.onSlope)
+            core.Movement.SetFriction(100000);
+        else if (core.Detection.onSteep)
+            core.Movement.SetFriction(0);
+        else
+            core.Movement.SetFriction(0.3f);
+        
         core.Movement.SetVelocity(Vector2.zero);
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
     }
 
     public override void LogicUpdate()
@@ -24,13 +26,6 @@ public class PlayerIdleState : PlayerGroundedState
         base.LogicUpdate();
 
         if (Exiting) return;
-        
-        if (core.Detection.onSlope)
-            core.Movement.SetFriction(100000);
-        else if (core.Detection.onSteep)
-            core.Movement.SetFriction(0);
-        else
-            core.Movement.SetFriction(0.3f);
 
         if (InputX != 0)
         {

@@ -2145,7 +2145,7 @@ MonoBehaviour:
   groundCheckRadius: 0.13
   wallCheckPosUp: {x: 0, y: 0.51}
   wallCheckPosMid: {x: 0, y: 0}
-  wallCheckLength: 0.42
+  wallCheckLength: 0.3
   slopeCheckDistance: 0.2
   maxAngle: 45
   grounded: 0
