@@ -7,8 +7,6 @@ namespace Core
     {
         internal Rigidbody2D rb;
 
-        private Vector2 _vec2Setter;
-
         private Vector2 _currentVelocity;
         public Vector2 CurrentVelocity => _currentVelocity;
         public int FaceDirection { get; private set; }
@@ -42,16 +40,16 @@ namespace Core
 
         public void SetVelocityX(float velocityX)
         {
-            _vec2Setter.Set(velocityX, _currentVelocity.y);
-            rb.velocity = _vec2Setter;
-            _currentVelocity = _vec2Setter;
+            vec2Setter.Set(velocityX, _currentVelocity.y);
+            rb.velocity = vec2Setter;
+            _currentVelocity = vec2Setter;
         }
 
         public void SetVelocityY(float velocityY)
         {
-            _vec2Setter.Set(_currentVelocity.x, velocityY);
-            rb.velocity = _vec2Setter;
-            _currentVelocity = _vec2Setter;
+            vec2Setter.Set(_currentVelocity.x, velocityY);
+            rb.velocity = vec2Setter;
+            _currentVelocity = vec2Setter;
         }
 
         public void SetFriction(float friction)

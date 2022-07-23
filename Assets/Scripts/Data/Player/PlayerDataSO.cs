@@ -20,4 +20,7 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("Wall")] 
     public float wallSlideVelocity;
+
+    [Header("Ledge")] 
+    public Vector2 LedgeClimbOffset;
 }

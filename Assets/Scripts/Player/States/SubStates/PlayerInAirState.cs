@@ -31,6 +31,9 @@ public class PlayerInAirState : PlayerState
         else if (core.Detection.touchWall && InputX * core.Detection.WallLocation > 0)
             stateMachine.ChangeState(player.WallSlideState);
         
+        else if (core.Detection.touchLedge && !player.LedgeState.Exiting)
+            stateMachine.ChangeState(player.LedgeState);
+        
         if (JumpInput.Press) 
         {
             CheckCoyoteTime();

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core
 {
@@ -40,6 +39,8 @@ namespace Core
         public Vector2 SlopeDirection { get; private set; }
         
         public int WallLocation { get; private set; }
+        
+        public Vector2 LedgePosition { get; private set; }
 
         private void Awake()
         {
@@ -47,6 +48,7 @@ namespace Core
             _center = _coll.bounds.center;
             _ground = LayerMask.GetMask("Ground", "Wall");
             _wall = LayerMask.GetMask("Wall");
+            LedgePosition = new Vector2();
         }
 
         internal void LogicUpdate()
@@ -72,8 +74,14 @@ namespace Core
 
         private void GetWallInfo()
         {
-            var mid = Physics2D.Raycast(_center + wallCheckPosMid, transform.right, wallCheckLength, _wall);
-            var up = Physics2D.Raycast(_center + wallCheckPosUp, transform.right, wallCheckLength, _wall);
+            var right = transform.right;
+            var mid = Physics2D.Raycast(_center + wallCheckPosMid, right, wallCheckLength, _wall);
+            var up = Physics2D.Raycast(_center + wallCheckPosUp, right, wallCheckLength, _wall);
+
+            vec2Setter.Set(wallCheckPosUp.x + mid.distance * right.x, wallCheckPosUp.y);
+            var vert = Physics2D.Raycast(_center + vec2Setter, Vector2.down, wallCheckPosUp.y, _wall);
+            vec2Setter.Set(_center.x + mid.distance * right.x, _center.y - vert.distance);
+            LedgePosition = vec2Setter;
 
             touchWall = mid && up;
             touchLedge = mid && !up;

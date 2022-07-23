@@ -24,6 +24,7 @@ public class Player: Entity
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerInAirState AirState { get; private set; }
     public PlayerWallSlideState WallSlideState { get; private set; }
+    public PlayerLedgeState LedgeState { get; private set; }
     
     #endregion
 
@@ -42,6 +43,7 @@ public class Player: Entity
         WallJumpState = new PlayerWallJumpState(this, data, "jump", StateMachine);
         AirState = new PlayerInAirState(this, data, "air", StateMachine);
         WallSlideState = new PlayerWallSlideState(this, data, "wall-slide", StateMachine);
+        LedgeState = new PlayerLedgeState(this, data, "ledge", StateMachine);
         
         Anim = GetComponent<Animator>();
         InputHandler = GetComponent<GameInputHandler>();

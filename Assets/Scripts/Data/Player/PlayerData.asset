@@ -21,3 +21,4 @@ MonoBehaviour:
   wallJumpAngle: 65
   coyoteTime: 0.105
   wallSlideVelocity: 0.5
+  LedgeClimbOffset: {x: -0.183, y: -0.075}
