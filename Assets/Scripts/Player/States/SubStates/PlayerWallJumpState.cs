@@ -40,7 +40,8 @@ public class PlayerWallJumpState: PlayerAbilityState
     {
         player.InputHandler.LockMoveInputX(core.Movement.FaceDirection);
 
-        while (!core.Detection.grounded && player.InputHandler.MoveInputLock && !player.WallSlideState.Sliding)
+        while (!core.Detection.grounded && player.InputHandler.MoveInputLock && !player.WallSlideState.Sliding
+               && !player.LedgeState.Grabing)
             yield return null;
 
         player.InputHandler.UnLockMoveInputX();

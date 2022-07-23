@@ -1939,8 +1939,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.095}
-  m_Size: {x: 0.43, y: 1}
+  m_Offset: {x: 0, y: -0.08}
+  m_Size: {x: 0.38, y: 1}
   m_Direction: 0
 --- !u!95 &1548580086
 Animator:
@@ -2145,7 +2145,7 @@ MonoBehaviour:
   groundCheckRadius: 0.13
   wallCheckPosUp: {x: 0, y: 0.51}
   wallCheckPosMid: {x: 0, y: 0}
-  wallCheckLength: 0.3
+  wallCheckLength: 0.35
   slopeCheckDistance: 0.2
   maxAngle: 45
   grounded: 0
