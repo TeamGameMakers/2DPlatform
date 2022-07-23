@@ -1,0 +1,17 @@
+namespace Base.FSM
+{
+    public class State
+    {
+        protected StateMachine stateMachine;
+        
+        public State(StateMachine stateMachine)
+        {
+            this.stateMachine = stateMachine;
+        }
+    
+        public virtual void Enter() {}
+        public virtual void LogicUpdate() {}
+        public virtual void PhysicsUpdate() {}
+        public virtual void Exit() {}
+    }
+}
